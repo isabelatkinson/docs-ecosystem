@@ -18,12 +18,12 @@ raw: ecosystem/tutorial/manage-red-hat-enterprise-linux-identity-management -> $
 raw: ecosystem/use-cases/category-hierarchy -> ${devhub}
 raw: ecosystem/use-cases/hadoop -> https://github.com/mongodb/mongo-hadoop
 raw: ecosystem/use-cases/hierarchical-aggregation -> ${devhub}
-raw: ecosystem/use-cases/http-interfaces -> ${devub}
-raw: ecosystem/use-cases/inventory-management -> ${devub}
-raw: ecosystem/use-cases/metadata-and-asset-management -> ${devub}
-raw: ecosystem/use-cases/product-catalog -> ${devub}
-raw: ecosystem/use-cases/storing-comments -> ${devub}
-raw: ecosystem/use-cases/storing-log-data -> ${devub}
+raw: ecosystem/use-cases/http-interfaces -> ${devhub}
+raw: ecosystem/use-cases/inventory-management -> ${devhub}
+raw: ecosystem/use-cases/metadata-and-asset-management -> ${devhub}
+raw: ecosystem/use-cases/product-catalog -> ${devhub}
+raw: ecosystem/use-cases/storing-comments -> ${devhub}
+raw: ecosystem/use-cases/storing-log-data -> ${devhub}
 
 raw: ecosystem/tutorial/install-mongodb-on-amazon-ec2 -> ${base}/platforms/amazon-ec2
 raw: ecosystem/tutorial/automate-deployment-with-cloudformation -> ${base}/platforms/amazon-ec2
