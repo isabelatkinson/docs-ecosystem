@@ -86,12 +86,12 @@ content: |
 
         .. code-block:: java
 
-           // TODO: verify correctness
            Map<String, Object> providerDetails = new HashMap<String, Object>();
 
-           providerDetails.put("tenantId", new BsonString("<Azure account organization>"));
-           providerDetails.put("clientId", new BsonString("<Azure client ID>"));
-           providerDetails.put("clientSecret", new BsonString("<Azure client secret>"));
+           providerDetails.put("tenantId", "<Azure account organization>");
+           providerDetails.put("clientId", "<Azure client ID>");
+           providerDetails.put("clientSecret", "<Azure client secret>");
+           providerDetails.put("identityPlatformEndpoint", "<Azure custom endpoint host>");
 
            Map<String, Map<String, Object>> kmsProviders = new HashMap<String, Map<String, Object>>();
            kmsProviders.put("azure", providerDetails);
@@ -123,7 +123,8 @@ content: |
               "azure": {
                   "tenantId": "<Azure account organization>",
                   "clientId": "<Azure client ID>",
-                  "clientSecret": "<Azure client secret>"
+                  "clientSecret": "<Azure client secret>",
+                  "identityPlatformEndpoint": "<Azure custom endpoint host>"
               }
            }
 ---

@@ -198,6 +198,7 @@ content: |
                    .append("projectId", "<GCP project identifier>")
                    .append("location", "<GCP region>")
                    .append("keyRing", "<GCP key ring name>")
+                   .append("keyName", "<GCP key name>")
                    .append("keyVersion", "<GCP key version>")
                    .append("endpoint", "<GCP KMS API endpoint>"));
 
