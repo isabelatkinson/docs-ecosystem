@@ -203,6 +203,13 @@ content: |
                    .append("endpoint", "<GCP KMS API endpoint>"));
 
            BsonBinary dataKeyId = clientEncryption.createDataKey("gcp", dataKeyOptions);
+
+
+        .. note::
+           To use the GCP KMS, you must use
+           `mongodb-crypt <https://mvnrepository.com/artifact/org.mongodb/mongodb-crypt>`__ version 1.1 or later in
+           your application's environment.
+
      .. tab::
         :tabid: nodejs
 

@@ -146,16 +146,24 @@ content: |
                .build());
 
            BsonString masterKeyArn = new BsonString("<Master Key ARN>"); // e.g. "arn:aws:kms:us-east-2:111122223333:alias/test-key"
-           BsonString masterKeyRegion = new BsonString("<Master Key Region>")
+           BsonString masterKeyRegion = new BsonString("<Master Key Region>");
+           BsonString masterKeyEndpoint = new BsonString("<AWS Custom Endpoint Host>");
            DataKeyOptions dataKeyOptions = new DataKeyOptions().masterKey(
                new BsonDocument()
-                   .append("key", masterKeyArn));
+                   .append("key", masterKeyArn)
                    .append("region", masterKeyRegion)
+                   .append("endpoint", masterKeyEndpoint));
 
            BsonBinary dataKeyId = clientEncryption.createDataKey("aws", dataKeyOptions);
            String base64DataKeyId = Base64.getEncoder().encodeToString(dataKeyId.getData());
 
            System.out.println("DataKeyId [base64]: " + base64DataKeyId);
+
+        .. note::
+
+           To use the AWS Key Vault, you must use
+           `mongodb-crypt <https://mvnrepository.com/artifact/org.mongodb/mongodb-crypt>`__ version 1.0 or later in
+           your application's environment.
      .. tab::
         :tabid: nodejs
 
