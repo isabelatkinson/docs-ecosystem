@@ -6,9 +6,29 @@ Pinterust
 
 .. toctree::
 
-   Overview </rust-tutorial/overview>
    Getting Started </rust-tutorial/getting-started>
    Define Your Document Models</rust-tutorial/document-modeling>
    Define Your CRUD Operations </rust-tutorial/crud-operations>
    Build Your Application Endpoints </rust-tutorial/application-endpoints>
+
+Contents
+--------
+
+- :doc:`Getting Started </rust-tutorial/getting-started>`
+- :doc:`Define Your Document Models</rust-tutorial/document-modeling>`
+- :doc:`Define Your CRUD Operations </rust-tutorial/crud-operations>`
+- :doc:`Build Your Application Endpoints </rust-tutorial/application-endpoints>`
+
+
+Overview
+--------
+
+TODO:
+- Add screenshots
+
+What we're building
+
+What's required
+
+What it should look like once completed
 

@@ -26,5 +26,6 @@ MongoDB Drivers
    Scala Driver </scala>
    Swift Driver </swift>
    Rust Driver </rust>
+   Rust Driver Tutorial </rust-tutorial>
    About Compatibility Tables <about-compatibility>
    Security </security>
