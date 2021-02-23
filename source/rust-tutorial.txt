@@ -4,9 +4,11 @@ Pinterust
 
 .. default-domain:: mongodb
 
-- :doc: `/rust-tutorial/overview`
-- :doc: `/rust-tutorial/getting-started`
-- :doc: `/rust-tutorial/document-modeling`
-- :doc: `/rust-tutorial/crud-operations`
-- :doc: `/rust-tutorial/application-endpoints`
+.. toctree::
+
+   Overview </rust-tutorial/overview>
+   Getting Started </rust-tutorial/getting-started>
+   Define Your Document Models</rust-tutorial/document-modeling>
+   Define Your CRUD Operations </rust-tutorial/crud-operations>
+   Build Your Application Endpoints </rust-tutorial/application-endpoints>
 
