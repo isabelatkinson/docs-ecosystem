@@ -1,0 +1,57 @@
+.. _rust-tutorial-endpoints:
+
+================================
+Build Your Application Endpoints
+================================
+
+.. default-domain:: mongodb
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+TODO:
+Front-end to call those endpoints. 
+If we have time, we could build an AJAX front-end to refresh the data. 
+We could use some pre-built styles to make it resemble Pinterest.
+
+
+Overview
+--------
+
+Our Rust application features endpoints that populate the following front-end 
+pages:
+
+- a user's home screen
+- a personal board of pins that the user created
+- a group board of pins that the community contributed
+- a new pin entry page
+- new pins since a specific timestamp
+  
+See the sections below for more specific details on how to set up these
+endpoints. 
+
+Show a User's Home Screen
+-------------------------
+
+TODO
+
+Show a Personal Board
+---------------------
+
+TODO
+
+Show a Group Board
+------------------
+
+TODO
+
+Add a Pin to a Board
+--------------------
+
+TODO
+
+Refresh a Board
+---------------
+
+TODO

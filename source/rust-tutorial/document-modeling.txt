@@ -1,0 +1,45 @@
+.. _rust-tutorial-document-models:
+
+===========================
+Define Your Document Models
+===========================
+
+.. default-domain:: mongodb
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+Overview
+--------
+
+On this page, we show how we made our decisions about how to organize the
+tutorial application data across documents.
+
+We created a document schema that organizes the data across the following 
+entities:
+
+- users
+- pins
+- boards
+
+The following sections describe how you can create Rust structs that 
+correspond to the data types as well as how you can represent relationships 
+between your documents in MongoDB.
+
+Data types
+----------
+
+TODO: 
+
+Relational Data: Embedded Documents
+-----------------------------------
+
+TODO: 
+
+
+Relational Data: Arrays of Document Ids
+---------------------------------------
+
+TODO:
+

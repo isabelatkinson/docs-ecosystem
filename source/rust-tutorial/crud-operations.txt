@@ -1,0 +1,25 @@
+.. _rust-tutorial-crud:
+
+===========================
+Define Your CRUD Operations
+===========================
+
+.. default-domain:: mongodb
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+Overview
+--------
+
+On this page, we explain how you can use various CRUD operations to store
+and retrieve data for our tutorial application.
+
+
+
+
+
+How to call CRUD operations (and any other type of driver operations) using the Rust driver. 
+Show any common errors you might encounter and how to debug/resolve them. 
+Limit to the CRUD operations used in the tutorial.

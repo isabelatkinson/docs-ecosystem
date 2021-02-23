@@ -1,0 +1,12 @@
+=========
+Pinterust
+=========
+
+.. default-domain:: mongodb
+
+- :doc: `/rust-tutorial/overview`
+- :doc: `/rust-tutorial/getting-started`
+- :doc: `/rust-tutorial/document-modeling`
+- :doc: `/rust-tutorial/crud-operations`
+- :doc: `/rust-tutorial/application-endpoints`
+
