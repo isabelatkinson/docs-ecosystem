@@ -13,13 +13,216 @@ Define Your CRUD Operations
 Overview
 --------
 
-On this page, we explain how you can use various CRUD operations to store
-and retrieve data for our tutorial application.
+On this page, we explain how we perform CRUD (Create, Read, Update, and Delete)
+operations to store and retrieve data for our tutorial application.
 
 
+Pinterust Collections
+---------------------
+
+In our tutorial, we use the following collections to organize the different
+types of documents:
+
+- users
+- pins
+- documents
+
+See the following sections for more information on the fields contained in
+each document type.
+
+.. _pinterust-user-document:
+
+User
+~~~~
+
+This document stores the user, the pins and boards they created, the group
+boards they follow, and the data required to render the user's home page.
+We store user documents in our sample ``users`` collection with the following
+fields:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Field Name
+     - Type
+     - Description
+   * - username
+     - String
+     - Unique display name that identifies the user
+   * - personalBoards
+     - Array of documents
+     - Normalized ``board`` documents
+   * - groupBoards
+     - Array of document ids
+     - References the group boards the user follows
+
+.. _pinterust-user-struct:
+
+We can define a struct that corresponds to a user document as follows:
+
+.. code-block:: rust
+
+   use mongodb::bson::oid::ObjectId;
+
+    struct User {
+       id: ObjectId,
+       username: String,
+       personal_boards: Vec<Board>,
+       group_boards: Vec<ObjectId>,
+    }
+
+.. _pinterust-pin-document:
+
+Pin
+~~~
+
+This document stores a pin -- an item of interest that we track by a url and
+image url -- and identifying information about its author. We store pin
+documents in our sample ``pins`` collection with the following fields:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Field Name
+     - Type
+     - Description
+   * - title
+     - String
+     - Description of the pin's contents
+   * - authorUsername
+     - String
+     - Username of the pin creator
+   * - authorId
+     - ObjectId
+     - User id of the pin creator
+   * - createdDt
+     - Date
+     - Time when the pin was created
 
 
+.. _pinterust-pin-struct:
 
-How to call CRUD operations (and any other type of driver operations) using the Rust driver. 
-Show any common errors you might encounter and how to debug/resolve them. 
-Limit to the CRUD operations used in the tutorial.
+We can define a struct that corresponds to a pin document as follows:
+
+.. code-block:: rust
+   use mongodb::bson::{oid::ObjectId, DateTime};
+
+   struct Pin {
+       pub id: ObjectId,
+       pub title: String,
+       pub author_username: String,
+       pub author_id: ObjectId,
+       pub date_created: DateTime,
+       pub url: String,
+       pub image_url: String,
+   }
+
+.. _pinterust-board-document:
+
+Board
+~~~~~
+
+This document stores a board -- a collection on pins -- and identifying
+information about its author as well as the number of views it received.
+
+.. list-table::
+   :header-rows: 1
+
+   * - Field Name
+     - Type
+     - Description
+   * - title
+     - String
+     - Description of the board's contents
+   * - category
+     - Enum (personal, group)
+     - | Whether the board is a personal or group one.
+       | A personal board can be viewed by anyone, but updated only by the author.
+       | A group board can be viewed by anyone and updated by anyone.
+
+
+.. _pinterust-board-struct:
+
+We can define a struct that corresponds to a board document as follows:
+
+.. code-block:: rust
+   use mongodb::bson::oid::ObjectId;
+
+   pub(crate) struct Board {
+       id: ObjectId,
+       title: String,
+       category: BoardKind,
+       author_username: String,
+       author_id: ObjectId,
+       pins: Vec<ObjectId>,
+       views: u64,
+   }
+
+   // enum that represents the category (Personal or Group) of board
+   enum BoardKind {
+       Personal,
+       Group,
+   }
+
+
+Create
+------
+
+We can use the ``insert_one()`` or ``insert_many()`` function to add new
+documents to our Collections.
+
+
+Follow the steps below to see how you can use the
+``serde`` crate to serialize and deserialize data between a struct and
+BSON document.
+
+First, make sure to add the ``serde`` crate and enable the ``derive`` feature
+in your ``Cargo.toml`` file which should resemble the following:
+
+.. code-block:: toml
+
+   [dependencies]
+   serde = { version = "1.0", features = ["derive"] }
+
+For more information about ``derive``, see the `Serde documentation on derive <https://serde.rs/derive.html>`__.
+
+Next, add a ``serde`` macro to your structs to automatically generate the
+code for serialization, deserialization, and debugging which should resemble
+the following:
+
+.. code-block:: rust
+
+   #[derive(Debug, Deserialize, Serialize)]
+   struct User { ... }
+
+After adding the macro, you can pass your structs directly to the
+``insert_one()`` or ``insert_many()`` methods.
+
+To insert a new document, use the ``mongodb::Client`` to get a reference to
+the database and collection in which you want to create the new document(s).
+The following code shows how we can get a reference to the collection and
+insert a newly-instantiated pin struct:
+
+.. code-block:: rust
+
+   use mongodb::Client;
+   let client = Client::with_uri_str("<your connection string>")?;
+   let db = client.database("<your db name>");
+   let coll = db.collection("pin");
+
+   let firstPin = Pin {
+       id: ObjectId::new(),
+       title: "My First Pin".to_string(),
+       author_username: "Leafy Green".to_string(),
+       author_id: "user ObjectId", // placeholder for an actual ObjectId
+       date_created: Utc::now().into(),
+       url: "https://docs.mongodb.com/drivers/rust/",
+       image_url: "https://images.example.com/mongodb.png".to_string(),
+   }
+
+   let insert_result = user.insert_one(firstPin, None).await?;
+
+Retrieve
+--------
+
+TODO
