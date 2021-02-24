@@ -34,24 +34,67 @@ endpoints.
 Show a User's Home Screen
 -------------------------
 
-TODO
+Endpoint: /users/<userId> (GET)
+Input:
+- userId param
 
-Show a Personal Board
----------------------
+Output: JSON document
+- username
+- personal board (list) containing:
+   - entire "boards" document
+- group board (list) containing:
+   - entire "boards" document
 
-TODO
+Show a Board
+------------
 
-Show a Group Board
-------------------
+Endpoint: /boards/<boardId> (GET)
+Input:
+- userId param
+- boardId param
 
-TODO
+Output: JSON document
+- entire "boards" document matching the id 
+
+View Form for Add a Pin
+-----------------------
+
+Endpoint: /user/<userId>/pin (GET)
+Input:
+- userId param (no security!)
+
+Output:
+- userId
+- userName
+- info for each board from the user document including:
+   - board id
+   - board title
 
 Add a Pin to a Board
 --------------------
 
-TODO
+Endpoint: /pin (POST)
+Input: 
+- title
+- authorUsername (no security!)
+- authorId (no security!)
+- url
+- imageUrl
+- boardId
 
+Output:
+- board id (pin added to this board)
+- board title
+- pin id (new pin)
+- pin title (new pin)
+ 
 Refresh a Board
 ---------------
 
-TODO
+Endpoint: /boards/<boardId>/after/<epoch timestamp> (GET)
+Input:
+- boardId param (used to identify which board to return/search)
+- epoch timestamp param (used to filter pins by date)
+
+Output: JSON document
+- array of "pin" documents
