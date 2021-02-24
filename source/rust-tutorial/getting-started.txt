@@ -18,11 +18,11 @@ This guide shows you how to start your Rust tutorial application which
 uses the official MongoDB Rust driver to connect to a MongoDB Atlas
 cluster.
 
-The Rust driver is an interface through which you can connect to and 
+The Rust driver is an interface through which you can connect to and
 communicate with MongoDB instances.
 
-MongoDB Atlas is a fully-managed cloud database service that hosts your data 
-on MongoDB instances. We show you how to get started with your own free 
+MongoDB Atlas is a fully-managed cloud database service that hosts your data
+on MongoDB instances. We show you how to get started with your own free
 (no credit card required) instance in this guide.
 
 Follow the steps below to connect your Rust application with a MongoDB
@@ -31,23 +31,22 @@ instance.
 Set up Your Project
 -------------------
 
-Install
-~~~~~~~
-
 Initialize the Project
 ~~~~~~~~~~~~~~~~~~~~~~
 
+Create a new project called ``pinterust`` using the following command:
 
 .. code-block:: none
 
    cargo new pinterust
 
+Change your working directory to the project root directory as follows:
 
-.. code-block:: none
+.. code-block:: console
 
    cd pinterust
 
-You should see data similar to the following in your ``Cargo.toml`` file:
+Open the ``Cargo.toml`` file and verify that it resembles the following:
 
 .. code-block:: toml
 
@@ -66,10 +65,8 @@ with the version in the ``dependencies`` section as follows:
 
 .. code-block:: toml
 
-   ... 
    [dependencies]
    mongodb = "2.0.0-alpha"
-
 
 Next, add a runtime to enable us to run asynchronous code. There are
 several popular Rust runtimes for asynchronous code, and for this project,
@@ -132,7 +129,7 @@ other connection options.
 
 To retrieve your connection string for the instance and user you created in
 the previous step, log into your Atlas account and navigate to the
-:guilabel:`Clusters` section and click the :guilabel:`Connect` button for the 
+:guilabel:`Clusters` section and click the :guilabel:`Connect` button for the
 cluster that you want to connect to as shown below.
 
 .. figure:: /includes/figures/atlas_connection_select_cluster.png
@@ -179,7 +176,7 @@ from Atlas or your local instance:
      for db_name in client.list_database_names(None, None).await? {
          println!("{}", db_name);
      }
-     
+
      Ok(())
    }
 
@@ -189,16 +186,16 @@ from Atlas or your local instance:
    }
 
 .. note:: Windows DNS Resolver
-   
+
    The Rust driver uses the ``trust-dns-resolver`` crate which has a known
    issue on Windows environments that causes performance issues due to making
    DNS lookups. We recommend that you specify an alternate resolver
-   configuration until this issue is resolved. To specify an alternate 
+   configuration until this issue is resolved. To specify an alternate
    resolver, update your ``ClientOptions`` as follows:
 
    .. code-block:: rust
 
-   let mut client_options = 
+   let mut client_options =
        ClientOptions::parse_with_resolver_config(
             "<connection string>"),
             Resolverconfig::cloudflare(),
@@ -206,7 +203,7 @@ from Atlas or your local instance:
        .await?;
 
 
-After you save your ``main.rs`` file, run the following command from your 
+After you save your ``main.rs`` file, run the following command from your
 project root directory to attempt to compile and run your application:
 
 .. code-block:: console
@@ -221,12 +218,12 @@ your MongoDB cluster which could resemble the following:
   admin
   config
   local
-  sample_mflix 
+  sample_mflix
 
 If you receive an error, check whether you included the proper connection
 string in the application code, and loaded the sample dataset in your Atlas
 cluster.
 
 After completing this guide, you now have a working application that uses
-the Rust driver to connect to your MongoDB cluster and list the 
+the Rust driver to connect to your MongoDB cluster and list the
 databases it contains.
