@@ -37,9 +37,11 @@ Show a User's Home Screen
 **Endpoint: /users/<userId> (GET)**
 
 **Input:**
+
 - userId param
 
 **Output:** JSON document
+
 - username
 - personal board (list) containing:
    - entire "boards" document
@@ -52,10 +54,12 @@ Show a Board
 **Endpoint: /boards/<boardId> (GET)**
 
 **Input:**
+
 - userId param
 - boardId param
 
 **Output:** JSON document
+
 - entire "boards" document matching the id
 
 View Form for Add a Pin
@@ -64,9 +68,11 @@ View Form for Add a Pin
 **Endpoint: /user/<userId>/pin (GET)**
 
 **Input:**
+
 - userId param (no security!)
 
 **Output:**
+
 - userId
 - userName
 - info for each board from the user document including:
@@ -79,6 +85,7 @@ Add a Pin to a Board
 **Endpoint: /pin (POST)**
 
 **Input:**
+
 - title
 - authorUsername (no security!)
 - authorId (no security!)
@@ -87,6 +94,7 @@ Add a Pin to a Board
 - boardId
 
 **Output:**
+
 - board id (pin added to this board)
 - board title
 - pin id (new pin)
@@ -98,8 +106,10 @@ Refresh a Board
 **Endpoint: /boards/<boardId>/after/<epoch timestamp> (GET)**
 
 **Input:**
+
 - boardId param (used to identify which board to return/search)
 - epoch timestamp param (used to filter pins by date)
 
 **Output: JSON document**
+
 - array of "pin" documents
