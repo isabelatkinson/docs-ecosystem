@@ -11,15 +11,15 @@ Build Your Application Endpoints
    :maxdepth: 1
 
 TODO:
-Front-end to call those endpoints. 
-If we have time, we could build an AJAX front-end to refresh the data. 
+Front-end to call those endpoints.
+If we have time, we could build an AJAX front-end to refresh the data.
 We could use some pre-built styles to make it resemble Pinterest.
 
 
 Overview
 --------
 
-Our Rust application features endpoints that populate the following front-end 
+Our Rust application features endpoints that populate the following front-end
 pages:
 
 - a user's home screen
@@ -27,18 +27,19 @@ pages:
 - a group board of pins that the community contributed
 - a new pin entry page
 - new pins since a specific timestamp
-  
+
 See the sections below for more specific details on how to set up these
-endpoints. 
+endpoints.
 
 Show a User's Home Screen
 -------------------------
 
-Endpoint: /users/<userId> (GET)
-Input:
+**Endpoint: /users/<userId> (GET)**
+
+**Input:**
 - userId param
 
-Output: JSON document
+**Output:** JSON document
 - username
 - personal board (list) containing:
    - entire "boards" document
@@ -48,22 +49,24 @@ Output: JSON document
 Show a Board
 ------------
 
-Endpoint: /boards/<boardId> (GET)
-Input:
+**Endpoint: /boards/<boardId> (GET)**
+
+**Input:**
 - userId param
 - boardId param
 
-Output: JSON document
-- entire "boards" document matching the id 
+**Output:** JSON document
+- entire "boards" document matching the id
 
 View Form for Add a Pin
 -----------------------
 
-Endpoint: /user/<userId>/pin (GET)
-Input:
+**Endpoint: /user/<userId>/pin (GET)**
+
+**Input:**
 - userId param (no security!)
 
-Output:
+**Output:**
 - userId
 - userName
 - info for each board from the user document including:
@@ -73,8 +76,9 @@ Output:
 Add a Pin to a Board
 --------------------
 
-Endpoint: /pin (POST)
-Input: 
+**Endpoint: /pin (POST)**
+
+**Input:**
 - title
 - authorUsername (no security!)
 - authorId (no security!)
@@ -82,19 +86,20 @@ Input:
 - imageUrl
 - boardId
 
-Output:
+**Output:**
 - board id (pin added to this board)
 - board title
 - pin id (new pin)
 - pin title (new pin)
- 
+
 Refresh a Board
 ---------------
 
-Endpoint: /boards/<boardId>/after/<epoch timestamp> (GET)
-Input:
+**Endpoint: /boards/<boardId>/after/<epoch timestamp> (GET)**
+
+**Input:**
 - boardId param (used to identify which board to return/search)
 - epoch timestamp param (used to filter pins by date)
 
-Output: JSON document
+**Output: JSON document**
 - array of "pin" documents
