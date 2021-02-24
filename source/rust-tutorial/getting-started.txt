@@ -14,8 +14,9 @@ Getting Started
 Overview
 --------
 
-This guide shows you how to create an application that uses the Rust
-driver to connect to a MongoDB Atlas cluster.
+This guide shows you how to start your Rust tutorial application which
+uses the official MongoDB Rust driver to connect to a MongoDB Atlas
+cluster.
 
 The Rust driver is an interface through which you can connect to and 
 communicate with MongoDB instances.
@@ -36,8 +37,69 @@ Install
 Initialize the Project
 ~~~~~~~~~~~~~~~~~~~~~~
 
+
+.. code-block:: none
+
+   cargo new pinterust
+
+
+.. code-block:: none
+
+   cd pinterust
+
+You should see data similar to the following in your ``Cargo.toml`` file:
+
+.. code-block:: toml
+
+   [package]
+   name = "pinterust"
+   version = "0.1.0"
+   authors = ["Person <person@example.com>"]
+   edition = "2018"
+
+
 Add MongoDB as a Dependency
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In your project manifest file (``Cargo.toml``), add the ``mongodb`` along
+with the version in the ``dependencies`` section as follows:
+
+.. code-block:: toml
+
+   ... 
+   [dependencies]
+   mongodb = "2.0.0-alpha"
+
+
+Next, add a runtime to enable us to run asynchronous code. There are
+several popular Rust runtimes for asynchronous code, and for this project,
+we use `tokio <https://crates.io/crates/tokio>`__. Update your manifest
+file to include ``tokio`` along with the version in the ``dependencies``
+section as follows:
+
+.. code-block:: toml
+
+   [dependencies]
+   tokio = "1.2.0"
+
+For more information about the driver versions or specifying a runtime
+framework, see our documentation on `crates.io <https://crates.io/crates/mongodb>`__.
+
+Add Web Framework Dependencies
+------------------------------
+
+In your project ``Cargo.toml`` file, add the ``actix`` entry along with
+the driver version in the ``dependencies`` section as follows:
+
+.. code-block:: toml
+
+   ...
+   [dependencies]
+   actix = "0.10"
+
+You can find more information about actix versions and how to use the
+framework  on `crates.io <https://crates.io/crates/actix>`__ or the
+`actix website <https://actix.rs/>`__.
 
 Create a MongoDB Cluster
 ------------------------
@@ -63,15 +125,15 @@ driver to connect to your instance of MongoDB and run a query on the sample
 data.
 
 We pass instructions to the driver on where and how to connect to your
-MongoDB instance in a string called the *connection string*. This string
+MongoDB instance in a string called the **connection string**. This string
 includes information on the hostname or IP address and port of your
 instance, authentication mechanism, user credentials when applicable, and
 other connection options.
 
 To retrieve your connection string for the instance and user you created in
 the previous step, log into your Atlas account and navigate to the
-**Clusters** section and click the **Connect** button for the cluster that you
-want to connect to as shown below.
+:guilabel:`Clusters` section and click the :guilabel:`Connect` button for the 
+cluster that you want to connect to as shown below.
 
 .. figure:: /includes/figures/atlas_connection_select_cluster.png
    :alt: The connect button in the clusters section of the Atlas UI
@@ -86,35 +148,85 @@ button to copy the *connection string* to your clipboard as shown below.
 Save your connection string to a safe location that you can access in the
 next step.
 
-Next, create a file containing the following code in your project
-directory, making sure to replace the section of the connection string
-with the credentials (username and password) you created on Atlas:
+Connect with Your Rust Project
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO: code example
+In this section, we show how you can connect and run a sample operation to
+verify that you are able to retrieve information from the MongoDB cluster.
 
-Run the sample code with the following command from your command line:
+Open your ``main.rs`` file in the "src" directory in your project. Replace
+the contents of the file with the following code example, making sure to
+replace the connection string with the one you created on and retrieved
+from Atlas or your local instance:
 
-TODO: run command
+.. code-block:: rust
 
-When you run the command, the sample code should output the details of the
-movie which resembles the following:
+   use mongodb::{error::Result, options::ClientOptions, Client};
+   use tokio;
 
-.. code-block:: none
+   async fn list_dbs() -> Result<()> {
+     // Parse a connection string into an options struct.
+     let mut client_options =
+         ClientOptions::parse("<connection string>").await?;
 
-   {
-     _id: ...,
-     plot: 'A young man is accidentally sent 30 years into the past...',
-     genres: [ 'Adventure', 'Comedy', 'Sci-Fi' ],
-     ...
-     title: 'Back to the Future',
-     ...
+     // Manually set an option.
+     client_options.app_name = Some("pinterust".to_string());
+
+     // Get a handle to the deployment.
+     let client = Client::with_options(client_options)?;
+
+     // List the names of the databases in that deployment.
+     for db_name in client.list_database_names(None, None).await? {
+         println!("{}", db_name);
+     }
+     
+     Ok(())
    }
+
+   #[tokio::main]
+   async fn main() {
+       list_dbs().await
+   }
+
+.. note:: Windows DNS Resolver
+   
+   The Rust driver uses the ``trust-dns-resolver`` crate which has a known
+   issue on Windows environments that causes performance issues due to making
+   DNS lookups. We recommend that you specify an alternate resolver
+   configuration until this issue is resolved. To specify an alternate 
+   resolver, update your ``ClientOptions`` as follows:
+
+   .. code-block:: rust
+
+   let mut client_options = 
+       ClientOptions::parse_with_resolver_config(
+            "<connection string>"),
+            Resolverconfig::cloudflare(),
+       )
+       .await?;
+
+
+After you save your ``main.rs`` file, run the following command from your 
+project root directory to attempt to compile and run your application:
+
+.. code-block:: console
+
+   cargo run
+
+If run successfully, your application should print a list of databases in
+your MongoDB cluster which could resemble the following:
+
+.. code-block:: console
+
+  admin
+  config
+  local
+  sample_mflix 
 
 If you receive an error, check whether you included the proper connection
 string in the application code, and loaded the sample dataset in your Atlas
 cluster.
 
-After completing this step, you should have a working application that uses
-the Rust  driver to connect to your MongoDB instance, run a query on the
-sample data, and prints out the result.
-
+After completing this guide, you now have a working application that uses
+the Rust driver to connect to your MongoDB cluster and list the 
+databases it contains.
