@@ -206,6 +206,8 @@ insert a newly-instantiated pin struct:
 .. code-block:: rust
 
    use mongodb::Client;
+   use chrono::Utc;
+
    let client = Client::with_uri_str("<your connection string>")?;
    let db = client.database("<your db name>");
    let coll = db.collection("pin");
@@ -216,12 +218,17 @@ insert a newly-instantiated pin struct:
        author_username: "Leafy Green".to_string(),
        author_id: "user ObjectId", // placeholder for an actual ObjectId
        date_created: Utc::now().into(),
-       url: "https://docs.mongodb.com/drivers/rust/",
+       url: "https://docs.mongodb.com/drivers/rust/".to_string(),
        image_url: "https://images.example.com/mongodb.png".to_string(),
    }
 
    let insert_result = user.insert_one(firstPin, None).await?;
 
+.. note::
+
+   We use the ``chrono`` crate to generate timestamps. Make sure to add
+   this crate to your dependencies.
+   
 Retrieve
 --------
 
