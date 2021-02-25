@@ -195,13 +195,12 @@ from Atlas or your local instance:
 
    .. code-block:: rust
 
-   let mut client_options =
-       ClientOptions::parse_with_resolver_config(
-            "<connection string>"),
-            Resolverconfig::cloudflare(),
-       )
-       .await?;
-
+      let mut client_options =
+          ClientOptions::parse_with_resolver_config(
+              "<connection string>"),
+              Resolverconfig::cloudflare(),
+          )
+          .await?;
 
 After you save your ``main.rs`` file, run the following command from your
 project root directory to attempt to compile and run your application:
@@ -215,10 +214,10 @@ your MongoDB cluster which could resemble the following:
 
 .. code-block:: console
 
-  admin
-  config
-  local
-  sample_mflix
+   admin
+   config
+   local
+   sample_mflix
 
 If you receive an error, check whether you included the proper connection
 string in the application code, and loaded the sample dataset in your Atlas
@@ -227,3 +226,4 @@ cluster.
 After completing this guide, you now have a working application that uses
 the Rust driver to connect to your MongoDB cluster and list the
 databases it contains.
+

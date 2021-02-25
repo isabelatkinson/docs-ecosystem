@@ -226,8 +226,8 @@ insert a newly-instantiated pin struct:
 
 .. note::
 
-   We use the ``chrono`` crate to generate timestamps. Make sure to add
-   this crate to your dependencies.
+   We use the `chrono <https://crates.io/crates/chrono>`__ crate to 
+   generate timestamps. Make sure to add this crate to your dependencies.
    
 Retrieve
 --------
