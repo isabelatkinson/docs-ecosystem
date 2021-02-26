@@ -105,6 +105,7 @@ documents in our sample ``pins`` collection with the following fields:
 We can define a struct that corresponds to a pin document as follows:
 
 .. code-block:: rust
+
    use mongodb::bson::{oid::ObjectId, DateTime};
 
    struct Pin {
@@ -146,6 +147,7 @@ information about its author as well as the number of views it received.
 We can define a struct that corresponds to a board document as follows:
 
 .. code-block:: rust
+
    use mongodb::bson::oid::ObjectId;
 
    pub(crate) struct Board {
@@ -170,7 +172,6 @@ Create
 
 We can use the ``insert_one()`` or ``insert_many()`` function to add new
 documents to our Collections.
-
 
 Follow the steps below to see how you can use the
 ``serde`` crate to serialize and deserialize data between a struct and
@@ -198,6 +199,49 @@ the following:
 After adding the macro, you can pass your structs directly to the
 ``insert_one()`` or ``insert_many()`` methods.
 
+We'll practice using ``insert_one()`` by adding code to insert a new pin
+into our pins collection. Navigate to the ``insert_pin()`` method in
+``pin.rs`` labeled TODO #1. This method accepts a reference to a ``Client``
+and the ``Pin`` to insert into the pins collection.
+
+First, we'll need to get a handle to the "pinterust" database. It's good
+practice to define static items for constant values, so we've defined
+the constant ``DB_NAME`` with the value "pinterust":
+
+.. code-block:: rust
+
+   let db = client.database(DB_NAME);
+
+Next, we'll retrieve the pins collection from our database. To specify
+that we want the ``Collection`` returned to use the ``Pin`` type, we can
+call the ``collection_with_type()`` method and use a type label:
+
+.. code-block:: rust
+
+   let coll: Collection<Pin> = db.collection_with_type("pins");
+
+Now we just need to call ``insert_one()`` to insert the ``Pin`` into the
+collection. ``insert_one()`` takes two arguments: the data to insert into
+the database, and an optional options struct. We don't need to specify any
+options for this operation, so we can pass in ``None`` for the second
+argument. We'll return the result of this operation from ``insert_pin()``
+so that our application can handle it.
+
+.. code-block:: rust
+
+   coll.insert_one(pin, None).await
+
+Putting it all together, the ``insert_pin()`` method should look something
+like this:
+
+.. code-block:: rust
+
+   async fn insert_pin(client: &Client, pin: Pin) -> Result<InsertOneResult> {
+        let db = client.database(DB_NAME);
+        let coll: Collection<Pin> = db.collection_with_type("pins");
+        coll.insert_one(pin, None).await
+   }
+
 To insert a new document, use the ``mongodb::Client`` to get a reference to
 the database and collection in which you want to create the new document(s).
 The following code shows how we can get a reference to the collection and
@@ -205,12 +249,12 @@ insert a newly-instantiated pin struct:
 
 .. code-block:: rust
 
-   use mongodb::Client;
+   use mongodb::{Client, Collection};
    use chrono::Utc;
 
    let client = Client::with_uri_str("<your connection string>")?;
    let db = client.database("<your db name>");
-   let coll = db.collection("pin");
+   let coll: Collection<Pin> = db.collection_with_type("pin");
 
    let firstPin = Pin {
        id: ObjectId::new(),
@@ -222,7 +266,7 @@ insert a newly-instantiated pin struct:
        image_url: "https://images.example.com/mongodb.png".to_string(),
    }
 
-   let insert_result = user.insert_one(firstPin, None).await?;
+   let insert_result = coll.insert_one(firstPin, None).await?;
 
 .. note::
 
@@ -232,4 +276,160 @@ insert a newly-instantiated pin struct:
 Retrieve
 --------
 
-TODO
+The ``find()`` and ``aggregate()`` methods allow us to retrieve documents from our
+Collections.
+
+When we load a board, we'll need to find all of the pins from the pins collection
+that belong to the board. We'll have to do this slightly differently for personal
+boards and group boards due to the different ways we store boards, so let's focus
+on group boards first.
+
+Navigate to the "TODO #2" comment on the ``get_group_board_pins()`` method in
+``board.rs``. This method returns a ``Result<Vec<Pin>>`` which will contain all
+of the pins for the specified ``Board``. We need to wrap our return in a ``Result``
+to capture any errors that might occur when querying the collection.
+
+We'll need to get a handle to our pins collection again. This time we can do it
+in one line by chaining our calls to ``database()`` and ``collection_with_type()``:
+
+.. code-block:: rust
+
+   let coll: Collection<Pin> = client.database(DB_NAME).collection_with_type("pins");
+
+Both find methods accept a filter in the form of a ``Document``. We can easily
+construct a new ``Document`` by using the ``doc`` macro and passing in the query
+operators we want to use. The ``Board`` stores its pins in a ``Vec<ObjectId>``,
+where each ``ObjectId`` refers to a pin in the pins collection. We can use the
+``$in`` query operator to query for pins with an ``ObjectId`` that's contained
+in the ``pins`` field of the ``Board``:
+
+.. code-block:: rust
+
+   let filter = doc! {
+       "_id": { "$in": board.pins }
+   };
+
+Now that we have our filter, we just need to pass it into the ``find()`` method!
+Similar to ``insert_one()``, ``find()`` takes in an options struct, but we can once
+again pass in ``None``:
+
+.. code-block:: rust
+
+   let cursor = coll.find(filter, None).await?;
+
+This code almost gives us what we need, but recall that the return type of
+``get_group_board_pins()`` is ``Result<Vec<Pin>>``, whereas ``find()`` returns a
+``Cursor<Pin>`` that needs to be iterated to retrieve all of the pins it contains.
+In order to convert from ``Cursor<Pin>`` to ``Vec<Pin>``, we can use the
+``try_collect()`` method, which will call ``next()`` on ``cursor`` until it's
+exhausted and collect the results into a ``Vec<Pin``. ``try_collect()`` wraps its
+return value in a ``Result`` since calling ``next()`` on a cursor could possibly
+result in an error.
+
+.. code-block:: rust
+
+   cursor.try_collect().await
+
+The full ``get_group_board_pins()`` should now look like this:
+
+.. code-block:: rust
+
+   async fn get_group_board_pins(client: &Client, board: Board) -> Result<Vec<Pin>> {
+      let coll: Collection<Pin> = client.database(DB_NAME).collection_with_type("pins");
+      let filter = doc! {
+          "_id": { "$in": board.pins }
+      };
+      let cursor = coll.find(filter, None).await?;
+      cursor.try_collect().await
+   }
+
+Update
+------
+
+Next we'll use the ``update_one()`` method to update a document in one of our
+collections.
+
+Note that the ``Board`` struct contains a field ``views`` which stores a
+``u64`` representing how many times that board has been viewed:
+
+.. code-block:: rust
+
+   use mongodb::bson::oid::ObjectId;
+
+   pub(crate) struct Board {
+       id: ObjectId,
+       title: String,
+       category: BoardKind,
+       author_username: String,
+       author_id: ObjectId,
+       pins: Vec<ObjectId>,
+       views: u64,
+   }
+
+   // enum that represents the category (Personal or Group) of board
+   enum BoardKind {
+       Personal,
+       Group,
+   }
+
+When a user clicks on one of their boards to view it, we'll need to
+increment the view count and store that new number in the boards
+collection. To do this, we'll use ``update_one()``.
+
+``update_one()`` takes in three arguments: a filter to determine
+which document we should update, a series of update operators
+that represent what updates should occur, and an options struct.
+Again, we won't worry about configuring options, so we can pass
+in ``None`` for that last parameter.
+
+Navigate to ``increment_group_board_count()`` at the bottom
+of ``board.rs``. This method accepts a reference to a ``Client``
+and the ``ObjectId`` of the board whose view count we should
+increment.
+
+First, let's get a handle to the boards collection:
+
+.. code-block:: rust
+
+   let boards: Collection<Board> = client.database(DB_NAME).collection_with_type("boards");
+
+We want to update the document in the boards collection whose
+``_id`` field matches the ``ObjectId`` passed into the function,
+so we'll use the following filter:
+
+.. code-block:: rust
+
+   let filter = doc! {
+       "_id": board_id
+   };
+
+Next, we'll need to define our update document. We can use the
+``$inc`` update operator to increment the views field by 1:
+
+.. code-block:: rust
+
+   let update = doc! {
+       { "$inc": { "views": 1 } }
+   };
+
+Now we have everything we need to call ``update_one()``
+
+.. code-block:: rust
+
+   boards.update_one(filter, update, None).await
+
+Similar to the previous methods we've implemented,
+``increment_group_board_count()`` returns the result of the
+``update_one()`` operation. ``increment_group_board_count()``
+should look like this:
+
+.. code-block:: rust
+
+   let boards: Collection<Board> = client.database(DB_NAME).collection_with_type("boards");
+    let filter = doc! {
+        "_id": board_id
+    };
+    let update = doc! {
+        "$inc": { "views": 1 }
+    };
+    boards.update_one(filter, update, None).await
